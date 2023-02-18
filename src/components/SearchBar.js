@@ -1,29 +1,30 @@
 import React, { useState, useEffect } from 'react';
 import { Form, Button } from 'react-bootstrap';
-import { debounce } from 'lodash';
+import { useDispatch, useSelector } from 'react-redux';
 
-// import { useDispatch, useSelector } from 'react-redux';
-// import { START_CAR, STOP_CAR, ADD_CAR } from '../utils/actions';
+import { ADD_TITLES, CLEAR_TITLES, UPDATE_TITLES } from '../utils/actions';
 
 export default function SearchBar({ dataService }) {
-    //   const dispatch = useDispatch();
-    //   const state = useSelector((state) => state);
+    const dispatch = useDispatch();
+    // const state = useSelector((state) => state);
 
-    // getAlbums: _.debounce(async function() {
-    //     const response = await AlbumService.fetchAlbums();
-    //     this.albums = response.data.albums;
-    //   }, 1000);
+    // console.log("State", state)
 
     const [searchTerm, setSearchTerm] = useState("");
+    const [triggerSearch, setTriggerSearch] = useState(false);
+
     useEffect(() => {
         const fetchData = async () => {
-            const results = await dataService.getData(searchTerm);
-            console.log("searchTerm", searchTerm)
-            console.log(results)
+            const { results } = await dataService.getData(searchTerm);
+            // console.log("searchTerm", searchTerm)
+            // console.log(results)
+            dispatch({
+                type: UPDATE_TITLES,
+                payload: results
+            })
         };
-        const getResults = debounce(fetchData, 500)
-        getResults();
-    }, [searchTerm]);
+        fetchData();
+    }, [triggerSearch]);
 
     return (
         <>
@@ -42,6 +43,10 @@ export default function SearchBar({ dataService }) {
                     disabled={!searchTerm}
                     type="submit"
                     variant="success"
+                    onClick={(e) => {
+                        e.preventDefault();
+                        setTriggerSearch(!triggerSearch)
+                    }}
                 >
                     Submit
                 </Button>

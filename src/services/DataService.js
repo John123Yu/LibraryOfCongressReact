@@ -3,7 +3,7 @@ export class DataService {
         var locQueryUrl = 'https://www.loc.gov/search/?fo=json';
         locQueryUrl = locQueryUrl + '&q=' + query;
 
-        const response = await fetch(`${locQueryUrl}${query}`, {
+        const response = await fetch(`${locQueryUrl}`, {
             method: 'GET',
             headers: {
                 Accept: 'application/json',
